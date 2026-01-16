@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Users, History, Gift, Copy, CheckCircle, Trophy, Award, Star, Zap } from 'lucide-react';
 
-const API_URL = 'https://unforensically-pseudoetymological-shenita.ngrok-free.dev';
+const API_URL = 'https://ponos-dice-backend.onrender.com';
 
 function App() {
   const [user, setUser] = useState(null);
