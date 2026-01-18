@@ -3,6 +3,172 @@ import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Users, History, Gift, Copy, C
 
 const API_URL = 'https://ponos-dice-backend.onrender.com';
 
+// Translations
+const translations = {
+  en: {
+    balance: 'Balance',
+    demo: 'DEMO',
+    real: 'REAL',
+    reset: 'Reset ($10,000)',
+    demoMode: 'Demo Mode',
+    depositRequired: 'Deposit Required',
+    deposit: 'Deposit',
+    needDeposit: 'You need to deposit crypto to play in real mode',
+    rollResult: 'Roll Result',
+    youWon: 'YOU WON!',
+    youLost: 'YOU LOST',
+    over: 'OVER',
+    under: 'UNDER',
+    target: 'Target',
+    winChance: 'Win Chance',
+    multiplier: 'Multiplier',
+    betAmount: 'Bet Amount',
+    roll: 'ROLL',
+    rolling: 'ROLLING...',
+    game: 'Game',
+    history: 'History',
+    referral: 'Referral',
+    noGames: 'No games yet',
+    referralProgram: 'Referral Program',
+    level: 'Level',
+    earnFrom: 'You earn',
+    fromLosses: "from every referral's",
+    loss: 'loss',
+    totalReferrals: 'Referrals',
+    totalInvited: 'Total invited',
+    earned: 'Earned',
+    totalCommission: 'Total commission',
+    howItWorks: 'How it works',
+    shareLink: 'Share your referral link with friends',
+    theyPlay: 'They sign up and play games',
+    whenLose: 'When they',
+    youEarn: 'you earn',
+    instantly: 'instantly!',
+    example: 'Example:',
+    refLoses: 'Referral loses',
+    youGet: 'You get',
+    levelRewards: 'Level Rewards',
+    yourLink: 'Your Referral Link',
+    shareEarn: 'Share and earn commission from every loss!',
+    yourReferrals: 'Your Referrals',
+    noRefs: 'No referrals yet',
+    startEarning: 'Share your link and start earning!',
+    yourCut: 'your cut',
+    wagered: 'Wagered',
+    lost: 'Lost',
+    games: 'Games',
+    referrals: 'referrals'
+  },
+  ru: {
+    balance: 'Баланс',
+    demo: 'ДЕМО',
+    real: 'РЕАЛ',
+    reset: 'Сброс ($10,000)',
+    demoMode: 'Демо режим',
+    depositRequired: 'Нужен депозит',
+    deposit: 'Пополнить',
+    needDeposit: 'Вам нужно внести крипту для игры в реальном режиме',
+    rollResult: 'Результат',
+    youWon: 'ВЫ ВЫИГРАЛИ!',
+    youLost: 'ВЫ ПРОИГРАЛИ',
+    over: 'ВЫШЕ',
+    under: 'НИЖЕ',
+    target: 'Цель',
+    winChance: 'Шанс выигрыша',
+    multiplier: 'Множитель',
+    betAmount: 'Сумма ставки',
+    roll: 'БРОСИТЬ',
+    rolling: 'БРОСАЮ...',
+    game: 'Игра',
+    history: 'История',
+    referral: 'Рефералы',
+    noGames: 'Игр пока нет',
+    referralProgram: 'Реферальная программа',
+    level: 'Уровень',
+    earnFrom: 'Вы получаете',
+    fromLosses: 'от каждого',
+    loss: 'проигрыша реферала',
+    totalReferrals: 'Рефералов',
+    totalInvited: 'Всего приглашено',
+    earned: 'Заработано',
+    totalCommission: 'Всего комиссии',
+    howItWorks: 'Как это работает',
+    shareLink: 'Поделитесь реферальной ссылкой с друзьями',
+    theyPlay: 'Они регистрируются и играют',
+    whenLose: 'Когда они',
+    youEarn: 'вы получаете',
+    instantly: 'мгновенно!',
+    example: 'Пример:',
+    refLoses: 'Реферал проиграл',
+    youGet: 'Вы получаете',
+    levelRewards: 'Награды за уровень',
+    yourLink: 'Ваша реферальная ссылка',
+    shareEarn: 'Делитесь и зарабатывайте комиссию с каждого проигрыша!',
+    yourReferrals: 'Ваши рефералы',
+    noRefs: 'Рефералов пока нет',
+    startEarning: 'Поделитесь ссылкой и начните зарабатывать!',
+    yourCut: 'ваша доля',
+    wagered: 'Поставлено',
+    lost: 'Проиграно',
+    games: 'Игр',
+    referrals: 'рефералов'
+  },
+  ua: {
+    balance: 'Баланс',
+    demo: 'ДЕМО',
+    real: 'РЕАЛ',
+    reset: 'Скинути ($10,000)',
+    demoMode: 'Демо режим',
+    depositRequired: 'Потрібен депозит',
+    deposit: 'Поповнити',
+    needDeposit: 'Вам потрібно внести крипту для гри в реальному режимі',
+    rollResult: 'Результат',
+    youWon: 'ВИ ВИГРАЛИ!',
+    youLost: 'ВИ ПРОГРАЛИ',
+    over: 'ВИЩЕ',
+    under: 'НИЖЧЕ',
+    target: 'Ціль',
+    winChance: 'Шанс виграшу',
+    multiplier: 'Множник',
+    betAmount: 'Сума ставки',
+    roll: 'КИНУТИ',
+    rolling: 'КИДАЮ...',
+    game: 'Гра',
+    history: 'Історія',
+    referral: 'Реферали',
+    noGames: 'Ігор поки немає',
+    referralProgram: 'Реферальна програма',
+    level: 'Рівень',
+    earnFrom: 'Ви отримуєте',
+    fromLosses: 'від кожного',
+    loss: 'програшу реферала',
+    totalReferrals: 'Рефералів',
+    totalInvited: 'Всього запрошено',
+    earned: 'Заробіток',
+    totalCommission: 'Всього комісії',
+    howItWorks: 'Як це працює',
+    shareLink: 'Поділіться реферальним посиланням з друзями',
+    theyPlay: 'Вони реєструються та грають',
+    whenLose: 'Коли вони',
+    youEarn: 'ви отримуєте',
+    instantly: 'миттєво!',
+    example: 'Приклад:',
+    refLoses: 'Реферал програв',
+    youGet: 'Ви отримуєте',
+    levelRewards: 'Нагороди за рівень',
+    yourLink: 'Ваше реферальне посилання',
+    shareEarn: 'Діліться та заробляйте комісію з кожного програшу!',
+    yourReferrals: 'Ваші реферали',
+    noRefs: 'Рефералів поки немає',
+    startEarning: 'Поділіться посиланням та почніть заробляти!',
+    yourCut: 'ваша частка',
+    wagered: 'Поставлено',
+    lost: 'Програно',
+    games: 'Ігор',
+    referrals: 'рефералів'
+  }
+};
+
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -19,6 +185,10 @@ function App() {
   const [copied, setCopied] = useState(false);
   const [showWin, setShowWin] = useState(false);
   const [particles, setParticles] = useState([]);
+  const [language, setLanguage] = useState('en');
+  const [soundEnabled, setSoundEnabled] = useState(true);
+
+  const t = translations[language];
 
   const balance = demoMode ? (user?.demo_balance || 10000) : (user?.balance || 0);
   const diceIcons = [Dice1, Dice2, Dice3, Dice4, Dice5, Dice6];
@@ -108,8 +278,49 @@ function App() {
     }
   };
 
+  const playSound = (type) => {
+    if (!soundEnabled) return;
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    if (type === 'click') {
+      oscillator.frequency.value = 800;
+      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.1);
+    } else if (type === 'roll') {
+      oscillator.frequency.value = 400;
+      oscillator.type = 'square';
+      gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.05);
+    } else if (type === 'win') {
+      oscillator.frequency.value = 800;
+      oscillator.type = 'sine';
+      gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.3);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.3);
+    } else if (type === 'lose') {
+      oscillator.frequency.value = 400;
+      oscillator.type = 'sawtooth';
+      gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.2);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.2);
+    }
+  };
+
   const rollDice = async () => {
     if (betAmount > balance || betAmount <= 0 || !user) return;
+    playSound('click');
     vib('light');
     setRolling(true);
     setResult(null);
@@ -118,7 +329,10 @@ function App() {
     let c = 0;
     const iv = setInterval(() => {
       setDiceValue(Math.floor(Math.random() * 100));
-      if (c++ % 3 === 0) vib('light');
+      if (c++ % 3 === 0) {
+        vib('light');
+        playSound('roll');
+      }
       if (c > 20) {
         clearInterval(iv);
         const roll = Math.floor(Math.random() * 100);
@@ -135,9 +349,11 @@ function App() {
           for (let i = 0; i < 20; i++) ps.push({id: Math.random(), x: Math.random() * 100, y: Math.random() * 100, size: Math.random() * 8 + 4, dur: Math.random() * 2 + 1});
           setParticles(ps);
           setTimeout(() => {setParticles([]); setShowWin(false);}, 2000);
+          playSound('win');
           vib('success');
         } else {
           setResult({type: 'loss', amount: betAmount});
+          playSound('lose');
           vib('error');
         }
         setRolling(false);
@@ -200,58 +416,75 @@ function App() {
       <div className="bg-zinc-900 border-b border-zinc-800 px-4 py-4">
         <div className="flex justify-between items-start mb-3">
           <div><h1 className="text-xl font-bold">🎲 PONOS DICE</h1><p className="text-xs text-zinc-500">@{user?.username}</p></div>
-          <div className="text-right"><p className="text-xs text-zinc-500 mb-1">Balance</p><p className="text-lg font-bold">${balance.toFixed(2)}</p></div>
+          <div className="text-right"><p className="text-xs text-zinc-500 mb-1">{t.balance}</p><p className="text-lg font-bold">${balance.toFixed(2)}</p></div>
         </div>
+        
+        <div className="flex items-center gap-2 mb-2">
+          <div className="flex gap-1 bg-zinc-800 p-1 rounded-lg border border-zinc-700">
+            {['en', 'ru', 'ua'].map(lang => (
+              <button key={lang} onClick={() => {playSound('click'); setLanguage(lang);}} className={`px-3 py-1 rounded text-xs font-semibold ${language === lang ? 'bg-white text-black' : 'text-zinc-400'}`}>
+                {lang.toUpperCase()}
+              </button>
+            ))}
+          </div>
+          <button onClick={() => {playSound('click'); setSoundEnabled(!soundEnabled);}} className={`px-3 py-1 rounded-lg text-sm border ${soundEnabled ? 'bg-white text-black border-white' : 'bg-zinc-800 text-zinc-400 border-zinc-700'}`}>
+            {soundEnabled ? '🔊' : '🔇'}
+          </button>
+        </div>
+        
         <div className="flex gap-2">
-          <button onClick={() => {vib('light'); setDemoMode(true);}} className={`flex-1 py-2.5 rounded-lg font-semibold text-sm ${demoMode ? 'bg-yellow-500 text-black' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>🎮 DEMO</button>
-          <button onClick={() => {vib('light'); setDemoMode(false);}} className={`flex-1 py-2.5 rounded-lg font-semibold text-sm ${!demoMode ? 'bg-white text-black' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>💰 REAL</button>
+          <button onClick={() => {playSound('click'); vib('light'); setDemoMode(true);}} className={`flex-1 py-2.5 rounded-lg font-semibold text-sm ${demoMode ? 'bg-yellow-500 text-black' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>🎮 {t.demo}</button>
+          <button onClick={() => {playSound('click'); vib('light'); setDemoMode(false);}} className={`flex-1 py-2.5 rounded-lg font-semibold text-sm ${!demoMode ? 'bg-white text-black' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>💰 {t.real}</button>
         </div>
-        {demoMode && <button onClick={() => {vib('light'); setUser(p => ({...p, demo_balance: 10000}));}} className="w-full mt-2 py-2 bg-zinc-800 text-yellow-400 rounded-lg text-xs font-semibold border border-zinc-700">🔄 Reset ($10,000)</button>}
+        {demoMode && <button onClick={() => {playSound('click'); vib('light'); setUser(p => ({...p, demo_balance: 10000}));}} className="w-full mt-2 py-2 bg-zinc-800 text-yellow-400 rounded-lg text-xs font-semibold border border-zinc-700">🔄 {t.reset}</button>}
       </div>
 
       <div className="p-4 pb-20">
         {activeTab === 'game' && <div className="space-y-4">
-          {demoMode && <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 text-center"><p className="text-yellow-400 font-semibold text-sm">🎮 Demo Mode</p></div>}
-          {!demoMode && user?.balance === 0 && <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-4 text-center"><p className="text-white font-semibold mb-2">💰 Deposit Required</p><button className="w-full py-2 bg-white text-black rounded-lg font-semibold">Deposit</button></div>}
+          {demoMode && <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 text-center"><p className="text-yellow-400 font-semibold text-sm">🎮 {t.demoMode}</p></div>}
+          {!demoMode && user?.balance === 0 && <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-4 text-center"><p className="text-white font-semibold mb-2">💰 {t.depositRequired}</p><p className="text-sm text-zinc-400 mb-3">{t.needDeposit}</p><button className="w-full py-2 bg-white text-black rounded-lg font-semibold">{t.deposit}</button></div>}
           
           <div className={`bg-zinc-900 rounded-xl p-8 border border-zinc-800 ${showWin ? 'animate-pulse' : ''}`}>
             <div className="flex flex-col items-center space-y-4">
               <div className={`${rolling ? 'animate-spin' : ''} ${showWin ? 'scale-125' : ''}`}>
                 <DiceIcon size={80} className={showWin ? 'text-yellow-400' : 'text-white'} strokeWidth={1.5}/>
               </div>
-              <p className={`text-5xl font-bold ${showWin ? 'text-yellow-400 scale-110' : 'text-white'}`}>{diceValue}</p>
+              <div className="text-center">
+                <p className={`text-5xl font-bold ${showWin ? 'text-yellow-400 scale-110' : 'text-white'}`}>{diceValue}</p>
+                <p className="text-sm text-zinc-500 mt-1">{t.rollResult}</p>
+              </div>
             </div>
           </div>
 
           {result && <div className={`${result.type === 'win' ? 'bg-white text-black' : 'bg-zinc-900 text-white border-zinc-700'} border-2 rounded-xl p-4 text-center`}>
-            <p className="font-bold text-lg">{result.type === 'win' ? '🎉 WON!' : '😔 LOST'}</p>
+            <p className="font-bold text-lg">{result.type === 'win' ? `🎉 ${t.youWon}` : `😔 ${t.youLost}`}</p>
             <p className="font-mono font-bold text-xl">{result.type === 'win' ? '+' : '-'}${Math.abs(result.amount).toFixed(2)}</p>
           </div>}
 
           <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
             <div className="flex gap-2 mb-4">
-              <button onClick={() => {vib('light'); setPrediction('over');}} className={`flex-1 py-3 rounded-lg font-semibold ${prediction === 'over' ? 'bg-white text-black' : 'bg-zinc-800 text-white'}`}>OVER</button>
-              <button onClick={() => {vib('light'); setPrediction('under');}} className={`flex-1 py-3 rounded-lg font-semibold ${prediction === 'under' ? 'bg-white text-black' : 'bg-zinc-800 text-white'}`}>UNDER</button>
+              <button onClick={() => {playSound('click'); vib('light'); setPrediction('over');}} className={`flex-1 py-3 rounded-lg font-semibold ${prediction === 'over' ? 'bg-white text-black' : 'bg-zinc-800 text-white'}`}>{t.over}</button>
+              <button onClick={() => {playSound('click'); vib('light'); setPrediction('under');}} className={`flex-1 py-3 rounded-lg font-semibold ${prediction === 'under' ? 'bg-white text-black' : 'bg-zinc-800 text-white'}`}>{t.under}</button>
             </div>
-            <div><label className="text-sm text-zinc-400 mb-2 block">Target: {targetNumber}</label>
+            <div><label className="text-sm text-zinc-400 mb-2 block">{t.target}: {targetNumber}</label>
             <input type="range" min="1" max="99" value={targetNumber} onChange={(e) => {vib('light'); setTargetNumber(parseInt(e.target.value));}} className="w-full h-2 bg-zinc-800 rounded-lg accent-white"/></div>
             <div className="grid grid-cols-2 gap-3 mt-3">
-              <div className="bg-zinc-800 rounded-lg p-3 text-center border border-zinc-700"><p className="text-xs text-zinc-500">Win Chance</p><p className="text-lg font-bold">{winChance}%</p></div>
-              <div className="bg-zinc-800 rounded-lg p-3 text-center border border-zinc-700"><p className="text-xs text-zinc-500">Multiplier</p><p className="text-lg font-bold">{multiplier}x</p></div>
+              <div className="bg-zinc-800 rounded-lg p-3 text-center border border-zinc-700"><p className="text-xs text-zinc-500">{t.winChance}</p><p className="text-lg font-bold">{winChance}%</p></div>
+              <div className="bg-zinc-800 rounded-lg p-3 text-center border border-zinc-700"><p className="text-xs text-zinc-500">{t.multiplier}</p><p className="text-lg font-bold">{multiplier}x</p></div>
             </div>
           </div>
 
           <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
-            <label className="text-sm text-zinc-400 mb-2 block">Bet Amount</label>
+            <label className="text-sm text-zinc-400 mb-2 block">{t.betAmount}</label>
             <div className="flex gap-2">
               <input type="number" value={betAmount} onChange={(e) => setBetAmount(Math.max(0, parseFloat(e.target.value) || 0))} className="flex-1 bg-zinc-800 rounded-lg px-4 py-3 text-white font-semibold outline-none border border-zinc-700"/>
-              <button onClick={() => setBetAmount(p => p * 2)} className="px-4 py-3 bg-zinc-800 rounded-lg font-semibold border border-zinc-700">2x</button>
-              <button onClick={() => setBetAmount(balance)} className="px-4 py-3 bg-zinc-800 rounded-lg font-semibold border border-zinc-700">MAX</button>
+              <button onClick={() => {playSound('click'); setBetAmount(p => p * 2);}} className="px-4 py-3 bg-zinc-800 rounded-lg font-semibold border border-zinc-700">2x</button>
+              <button onClick={() => {playSound('click'); setBetAmount(balance);}} className="px-4 py-3 bg-zinc-800 rounded-lg font-semibold border border-zinc-700">MAX</button>
             </div>
-            <div className="flex gap-2 mt-2">{[10, 50, 100, 500].map(a => <button key={a} onClick={() => setBetAmount(a)} className="flex-1 py-2 bg-zinc-800 rounded-lg text-sm border border-zinc-700">${a}</button>)}</div>
+            <div className="flex gap-2 mt-2">{[10, 50, 100, 500].map(a => <button key={a} onClick={() => {playSound('click'); setBetAmount(a);}} className="flex-1 py-2 bg-zinc-800 rounded-lg text-sm border border-zinc-700">${a}</button>)}</div>
           </div>
 
-          <button onClick={rollDice} disabled={rolling || betAmount > balance || betAmount <= 0} className={`w-full py-4 rounded-xl font-bold text-lg ${rolling || betAmount > balance || betAmount <= 0 ? 'bg-zinc-800 text-zinc-600' : 'bg-white text-black active:scale-95'}`}>{rolling ? '🎲 ROLLING...' : '🎲 ROLL'}</button>
+          <button onClick={rollDice} disabled={rolling || betAmount > balance || betAmount <= 0} className={`w-full py-4 rounded-xl font-bold text-lg ${rolling || betAmount > balance || betAmount <= 0 ? 'bg-zinc-800 text-zinc-600' : 'bg-white text-black active:scale-95'}`}>{rolling ? `🎲 ${t.rolling}` : `🎲 ${t.roll}`}</button>
         </div>}
 
         {activeTab === 'history' && <div>
