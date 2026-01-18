@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Users, History, Gift, Copy, CheckCircle, Trophy, Award, Star, Zap } from 'lucide-react';
+import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Users, TrendingUp, History, Gift, Copy, CheckCircle, Trophy, Award, Star, Zap } from 'lucide-react';
 
 const API_URL = 'https://ponos-dice-backend.onrender.com';
 
@@ -175,6 +175,16 @@ function App() {
     navigator.clipboard.writeText(`https://t.me/PonosDice_bot/DiceApp?startapp=${user?.referral_code}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const getRefSharePercent = (level) => {
+    const levels = {
+      'Bronze': 30,
+      'Silver': 40,
+      'Gold': 50,
+      'Platinum': 60
+    };
+    return levels[level] || 30;
   };
 
   const getLvlIcon = (l) => {
