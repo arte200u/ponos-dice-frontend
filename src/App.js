@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Users, TrendingUp, History, Gift, Copy, CheckCircle, Trophy, Award, Star, Zap } from 'lucide-react';
+import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Users, History, Gift, Copy, CheckCircle, Trophy, Award, Star, Zap, TrendingUp, DollarSign, Percent } from 'lucide-react';
 
 const API_URL = 'https://ponos-dice-backend.onrender.com';
 
@@ -68,26 +68,23 @@ function App() {
 
   useEffect(() => {
     if (activeTab === 'history' && user) {
-      console.log('🔄 History tab opened, loading history for:', user.telegram_id);
       loadHistory(user.telegram_id);
+    }
+    if (activeTab === 'referral' && user) {
+      loadReferrals(user.telegram_id);
     }
   }, [activeTab, user]);
 
   const loadHistory = async (id) => {
     try {
-      console.log('📋 Loading history for:', id);
       const res = await fetch(`${API_URL}/api/game/history/${id}`);
       const data = await res.json();
-      console.log('📋 History data:', data);
       setHistory(data.slice(0, 20).map(g => ({
         roll: g.roll, bet: g.bet_amount, prediction: g.prediction, target: g.target, won: g.won,
         amount: g.won ? g.win_amount : -g.bet_amount, time: new Date(g.created_at).toLocaleTimeString(),
         demo: g.demo_mode
       })));
-      console.log('📋 History loaded:', data.length, 'games');
-    } catch (e) {
-      console.error('❌ Load history error:', e);
-    }
+    } catch (e) {}
   };
 
   const loadReferrals = async (id) => {
@@ -150,7 +147,6 @@ function App() {
 
   const saveGame = async (roll, won, amt) => {
     try {
-      console.log('💾 Saving game:', {telegram_id: user.telegram_id, roll, won, amt, demo_mode: demoMode});
       const res = await fetch(`${API_URL}/api/game/play`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -160,14 +156,11 @@ function App() {
         })
       });
       const data = await res.json();
-      console.log('💾 Game saved:', data);
       if (data.success) {
         setUser(p => ({...p, balance: demoMode ? p.balance : data.balance, demo_balance: demoMode ? data.balance : p.demo_balance}));
         loadHistory(user.telegram_id);
       }
-    } catch (e) {
-      console.error('❌ Save game error:', e);
-    }
+    } catch (e) {}
   };
 
   const copyRef = () => {
@@ -178,12 +171,7 @@ function App() {
   };
 
   const getRefSharePercent = (level) => {
-    const levels = {
-      'Bronze': 30,
-      'Silver': 40,
-      'Gold': 50,
-      'Platinum': 60
-    };
+    const levels = {'Bronze': 30, 'Silver': 40, 'Gold': 50, 'Platinum': 60};
     return levels[level] || 30;
   };
 
@@ -193,6 +181,15 @@ function App() {
     if (l === 'Silver') return <Star size={16}/>;
     return <Zap size={16}/>;
   };
+
+  const getLvlColor = (l) => {
+    if (l === 'Platinum') return 'from-blue-500/20 to-cyan-500/20 border-blue-500/50';
+    if (l === 'Gold') return 'from-yellow-500/20 to-orange-500/20 border-yellow-500/50';
+    if (l === 'Silver') return 'from-gray-400/20 to-gray-500/20 border-gray-400/50';
+    return 'from-orange-500/20 to-red-500/20 border-orange-500/50';
+  };
+
+  const totalRefEarnings = referrals.reduce((sum, ref) => sum + ((ref.total_lost || 0) * getRefSharePercent(user?.level) / 100), 0);
 
   if (loading) return <div className="min-h-screen bg-black flex items-center justify-center"><div className="text-white text-center"><div className="animate-spin text-6xl mb-4">🎲</div><p className="text-xl">Loading...</p></div></div>;
 
@@ -260,17 +257,9 @@ function App() {
         {activeTab === 'history' && <div>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold">History</h2>
-            <button 
-              onClick={() => {
-                console.log('🔄 Manual refresh, user:', user?.telegram_id);
-                loadHistory(user?.telegram_id);
-              }}
-              className="px-4 py-2 bg-zinc-800 rounded-lg text-sm border border-zinc-700 hover:bg-zinc-700"
-            >
-              🔄 Refresh
-            </button>
+            <button onClick={() => loadHistory(user?.telegram_id)} className="px-4 py-2 bg-zinc-800 rounded-lg text-sm border border-zinc-700">🔄</button>
           </div>
-          {history.length === 0 ? <div className="text-center py-12 text-zinc-500"><History size={48} className="mx-auto mb-2 opacity-50"/><p>No games yet</p><p className="text-xs mt-2">User ID: {user?.telegram_id}</p></div> : 
+          {history.length === 0 ? <div className="text-center py-12 text-zinc-500"><History size={48} className="mx-auto mb-2 opacity-50"/><p>No games yet</p></div> : 
           history.map((g, i) => <div key={i} className="bg-zinc-900 rounded-xl p-4 border border-zinc-800 mb-2">
             <div className="flex justify-between items-start">
               <div>
@@ -287,26 +276,166 @@ function App() {
           </div>)}
         </div>}
 
-        {activeTab === 'referral' && <div className="space-y-4"><h2 className="text-xl font-bold">Referral</h2>
-          <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-xl p-4">
-            <div className="flex items-center justify-between gap-2"><div className="flex items-center gap-2">{getLvlIcon(user?.level)}<span className="font-bold">{user?.level}</span></div><span className="text-sm text-zinc-400">50%</span></div>
+        {activeTab === 'referral' && <div className="space-y-4">
+          <h2 className="text-xl font-bold mb-4">💎 Referral Program</h2>
+          
+          <div className={`bg-gradient-to-r ${getLvlColor(user?.level)} border rounded-xl p-5`}>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                {getLvlIcon(user?.level)}
+                <span className="font-bold text-lg">{user?.level} Level</span>
+              </div>
+              <div className="flex items-center gap-1 bg-black/30 px-3 py-1 rounded-full">
+                <Percent size={16} className="text-yellow-400"/>
+                <span className="text-lg font-bold text-yellow-400">{getRefSharePercent(user?.level)}%</span>
+              </div>
+            </div>
+            <p className="text-sm text-zinc-300">You earn <span className="font-bold text-white">{getRefSharePercent(user?.level)}%</span> from every referral's <span className="font-bold text-red-400">loss</span></p>
           </div>
+
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800"><Users size={20} className="mb-2"/><p className="text-2xl font-bold">{referrals.length}</p><p className="text-xs text-zinc-500">Referrals</p></div>
-            <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800"><Trophy size={20} className="text-yellow-400 mb-2"/><p className="text-2xl font-bold text-yellow-400">${(user?.referral_earnings || 0).toFixed(2)}</p><p className="text-xs text-zinc-500">Earned</p></div>
+            <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
+              <div className="flex items-center gap-2 mb-2">
+                <Users size={20} className="text-blue-400"/>
+                <p className="text-xs text-zinc-500">Referrals</p>
+              </div>
+              <p className="text-3xl font-bold">{referrals.length}</p>
+              <p className="text-xs text-zinc-600 mt-1">Total invited</p>
+            </div>
+            <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
+              <div className="flex items-center gap-2 mb-2">
+                <DollarSign size={20} className="text-green-400"/>
+                <p className="text-xs text-zinc-500">Earned</p>
+              </div>
+              <p className="text-3xl font-bold text-green-400">${totalRefEarnings.toFixed(2)}</p>
+              <p className="text-xs text-zinc-600 mt-1">Total commission</p>
+            </div>
           </div>
-          <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800"><p className="text-sm text-zinc-400 mb-2">Your Link</p>
-            <div className="flex gap-2"><input value={`t.me/PonosDice_bot/DiceApp?startapp=${user?.referral_code}`} readOnly className="flex-1 bg-zinc-800 rounded-lg px-4 py-2 text-white text-xs border border-zinc-700"/>
-            <button onClick={copyRef} className="px-4 py-2 bg-white text-black rounded-lg">{copied ? <CheckCircle size={20}/> : <Copy size={20}/>}</button></div>
+
+          <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
+            <div className="flex items-center gap-2 mb-3">
+              <TrendingUp size={18} className="text-yellow-400"/>
+              <h3 className="font-semibold">How it works</h3>
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-start gap-2">
+                <span className="text-yellow-400">1.</span>
+                <p className="text-zinc-400">Share your referral link with friends</p>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-yellow-400">2.</span>
+                <p className="text-zinc-400">They sign up and play games</p>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="text-yellow-400">3.</span>
+                <p className="text-zinc-400">When they <span className="font-bold text-red-400">lose</span>, you earn <span className="font-bold text-green-400">{getRefSharePercent(user?.level)}%</span> instantly!</p>
+              </div>
+            </div>
+            <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+              <p className="text-xs text-yellow-400">
+                <span className="font-bold">Example:</span> Referral loses $100 → You get <span className="font-bold">${getRefSharePercent(user?.level)}</span> to your balance!
+              </p>
+            </div>
           </div>
+
+          <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
+            <h3 className="font-semibold mb-3 flex items-center gap-2">
+              <Trophy size={18} className="text-yellow-400"/>
+              Level Rewards
+            </h3>
+            <div className="space-y-2">
+              {[
+                {name: 'Bronze', range: '0-5', percent: 30, color: 'text-orange-400', bg: 'bg-orange-500/10'},
+                {name: 'Silver', range: '6-15', percent: 40, color: 'text-gray-300', bg: 'bg-gray-500/10'},
+                {name: 'Gold', range: '16-30', percent: 50, color: 'text-yellow-400', bg: 'bg-yellow-500/10'},
+                {name: 'Platinum', range: '31+', percent: 60, color: 'text-blue-300', bg: 'bg-blue-500/10'}
+              ].map((lvl, i) => (
+                <div key={i} className={`flex items-center justify-between p-3 rounded-lg ${lvl.bg} border border-zinc-800`}>
+                  <div className="flex items-center gap-2">
+                    {getLvlIcon(lvl.name)}
+                    <div>
+                      <p className={`font-semibold ${lvl.color}`}>{lvl.name}</p>
+                      <p className="text-xs text-zinc-500">{lvl.range} referrals</p>
+                    </div>
+                  </div>
+                  <span className={`text-lg font-bold ${lvl.color}`}>{lvl.percent}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
+            <p className="text-sm text-zinc-400 mb-2 flex items-center gap-2">
+              <Gift size={16}/>
+              Your Referral Link
+            </p>
+            <div className="flex gap-2">
+              <input value={`t.me/PonosDice_bot/DiceApp?startapp=${user?.referral_code}`} readOnly className="flex-1 bg-zinc-800 rounded-lg px-4 py-2 text-white text-xs border border-zinc-700"/>
+              <button onClick={copyRef} className="px-4 py-2 bg-white text-black rounded-lg hover:bg-zinc-200 transition-colors">
+                {copied ? <CheckCircle size={20}/> : <Copy size={20}/>}
+              </button>
+            </div>
+            <p className="text-xs text-zinc-500 mt-2">💰 Share and earn commission from every loss!</p>
+          </div>
+
+          {referrals.length > 0 && <div>
+            <h3 className="font-semibold mb-3">Your Referrals ({referrals.length})</h3>
+            {referrals.map((ref, i) => {
+              const refEarned = (ref.total_lost || 0) * getRefSharePercent(user?.level) / 100;
+              return (
+                <div key={i} className="bg-zinc-900 rounded-xl p-4 border border-zinc-800 mb-2">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold">@{ref.username}</p>
+                        <span className={`text-xs px-2 py-0.5 rounded ${ref.level === 'Platinum' ? 'bg-blue-500/20 text-blue-300' : ref.level === 'Gold' ? 'bg-yellow-500/20 text-yellow-400' : ref.level === 'Silver' ? 'bg-gray-500/20 text-gray-300' : 'bg-orange-500/20 text-orange-400'}`}>
+                          {ref.level}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-green-400">+${refEarned.toFixed(2)}</p>
+                      <p className="text-xs text-zinc-500">your cut</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    <div className="bg-zinc-800 rounded p-2">
+                      <p className="text-zinc-500">Wagered</p>
+                      <p className="font-semibold text-white">${ref.total_wagered?.toFixed(0) || '0'}</p>
+                    </div>
+                    <div className="bg-zinc-800 rounded p-2">
+                      <p className="text-zinc-500">Lost</p>
+                      <p className="font-semibold text-red-400">${ref.total_lost?.toFixed(0) || '0'}</p>
+                    </div>
+                    <div className="bg-zinc-800 rounded p-2">
+                      <p className="text-zinc-500">Games</p>
+                      <p className="font-semibold text-white">{ref.games_played || 0}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>}
+
+          {referrals.length === 0 && <div className="text-center py-12 text-zinc-500 bg-zinc-900 rounded-xl border border-zinc-800">
+            <Users size={48} className="mx-auto mb-2 opacity-50"/>
+            <p className="font-semibold mb-1">No referrals yet</p>
+            <p className="text-xs">Share your link and start earning!</p>
+          </div>}
         </div>}
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 px-4 py-3">
         <div className="flex justify-around">
-          <button onClick={() => {vib('light'); setActiveTab('game');}} className={`flex flex-col items-center gap-1 ${activeTab === 'game' ? 'text-white' : 'text-zinc-600'}`}><Dice1 size={24}/><span className="text-xs">Game</span></button>
-          <button onClick={() => {vib('light'); setActiveTab('history');}} className={`flex flex-col items-center gap-1 ${activeTab === 'history' ? 'text-white' : 'text-zinc-600'}`}><History size={24}/><span className="text-xs">History</span></button>
-          <button onClick={() => {vib('light'); setActiveTab('referral');}} className={`flex flex-col items-center gap-1 ${activeTab === 'referral' ? 'text-white' : 'text-zinc-600'}`}><Gift size={24}/><span className="text-xs">Referral</span></button>
+          <button onClick={() => {vib('light'); setActiveTab('game');}} className={`flex flex-col items-center gap-1 ${activeTab === 'game' ? 'text-white' : 'text-zinc-600'}`}>
+            <Dice1 size={24}/><span className="text-xs">Game</span>
+          </button>
+          <button onClick={() => {vib('light'); setActiveTab('history');}} className={`flex flex-col items-center gap-1 ${activeTab === 'history' ? 'text-white' : 'text-zinc-600'}`}>
+            <History size={24}/><span className="text-xs">History</span>
+          </button>
+          <button onClick={() => {vib('light'); setActiveTab('referral');}} className={`flex flex-col items-center gap-1 ${activeTab === 'referral' ? 'text-white' : 'text-zinc-600'}`}>
+            <Gift size={24}/><span className="text-xs">Referral</span>
+          </button>
         </div>
       </div>
     </div>
